@@ -2,151 +2,72 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>自動排序比價工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智慧比價工具</title>
     <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; margin: 20px; background-color: #f8f9fa; }
-        .container { max-width: 950px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h2 { color: #333; text-align: center; margin-bottom: 5px; }
-        .hint { text-align: center; color: #666; font-size: 0.9em; margin-bottom: 20px; }
-        
-        table { width: 100%; border-collapse: collapse; }
-        th { background-color: #4a90e2; color: white; padding: 12px; cursor: pointer; position: relative; }
-        th:hover { background-color: #357abd; }
-        /* 加入排序小箭頭提示 */
-        th::after { content: " ↕"; font-size: 0.8em; opacity: 0.5; }
-        
-        td { border-bottom: 1px solid #eee; padding: 10px; text-align: center; }
-        input { width: 90%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; text-align: center; }
-        input:focus { border-color: #4a90e2; outline: none; box-shadow: 0 0 5px rgba(74,144,226,0.3); }
-        
-        .avg-price-cell { font-weight: bold; color: #e67e22; }
-        .cheapest { background-color: #d4edda !important; font-weight: bold; color: #155724; }
-        
-        .btn-container { margin-top: 20px; display: flex; justify-content: space-between; }
-        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; background: #6c757d; color: white; }
-        button:hover { background: #5a6268; }
+        body { font-family: -apple-system, sans-serif; margin: 0; background-color: #f2f2f7; padding: 15px; }
+        .container { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h2 { text-align: center; font-size: 1.2em; color: #1c1c1e; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background-color: #007aff; color: white; padding: 10px 5px; font-size: 13px; cursor: pointer; }
+        td { border-bottom: 1px solid #e5e5ea; padding: 8px 2px; text-align: center; }
+        input { width: 90%; padding: 12px 5px; border: 1px solid #d1d1d6; border-radius: 8px; font-size: 16px; text-align: center; -webkit-appearance: none; }
+        .avg-cell { font-weight: bold; color: #ff9500; font-size: 14px; }
+        .cheapest { background-color: #34c759; color: white !important; border-radius: 5px; padding: 5px; }
+        .footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #8e8e93; }
+        button { background: #ff3b30; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <h2>智慧比價工具 (支援排序)</h2>
-    <p class="hint">輸入數值後，點擊標題「藍色區域」即可依照該欄位高低排序</p>
-
+    <h2>智慧比價 (點擊標題排序)</h2>
     <table id="priceTable">
         <thead>
             <tr>
-                <th>品項 / 來源</th>
-                <th onclick="sortTable(1)">總價格</th>
-                <th onclick="sortTable(2)">總數量</th>
-                <th onclick="sortTable(3)">平均單價 ↓</th>
+                <th style="width: 25%;">來源</th>
+                <th onclick="sortTable(1)" style="width: 20%;">總價</th>
+                <th onclick="sortTable(2)" style="width: 20%;">總數</th>
+                <th onclick="sortTable(3)" style="width: 20%;">平均 ↓</th>
                 <th>備註</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td><input type="text" placeholder="店家 A"></td>
-                <td><input type="number" class="totalPrice" oninput="calcAll()"></td>
-                <td><input type="number" class="totalQty" oninput="calcAll()"></td>
-                <td class="avg-price-cell">0</td>
-                <td><input type="text" placeholder=""></td>
-            </tr>
-            <tr>
-                <td><input type="text" placeholder="店家 B"></td>
-                <td><input type="number" class="totalPrice" oninput="calcAll()"></td>
-                <td><input type="number" class="totalQty" oninput="calcAll()"></td>
-                <td class="avg-price-cell">0</td>
-                <td><input type="text" placeholder=""></td>
-            </tr>
-            <tr>
-                <td><input type="text" placeholder="店家 C"></td>
-                <td><input type="number" class="totalPrice" oninput="calcAll()"></td>
-                <td><input type="number" class="totalQty" oninput="calcAll()"></td>
-                <td class="avg-price-cell">0</td>
-                <td><input type="text" placeholder=""></td>
-            </tr>
-            <tr>
-                <td><input type="text" placeholder="店家 D"></td>
-                <td><input type="number" class="totalPrice" oninput="calcAll()"></td>
-                <td><input type="number" class="totalQty" oninput="calcAll()"></td>
-                <td class="avg-price-cell">0</td>
-                <td><input type="text" placeholder=""></td>
-            </tr>
-            <tr>
-                <td><input type="text" placeholder="店家 E"></td>
-                <td><input type="number" class="totalPrice" oninput="calcAll()"></td>
-                <td><input type="number" class="totalQty" oninput="calcAll()"></td>
-                <td class="avg-price-cell">0</td>
-                <td><input type="text" placeholder=""></td>
-            </tr>
+            <tr><td><input type="text" placeholder="A"></td><td><input type="number" class="p" oninput="calc()"></td><td><input type="number" class="q" oninput="calc()"></td><td class="avg-cell">0</td><td><input type="text"></td></tr>
+            <tr><td><input type="text" placeholder="B"></td><td><input type="number" class="p" oninput="calc()"></td><td><input type="number" class="q" oninput="calc()"></td><td class="avg-cell">0</td><td><input type="text"></td></tr>
+            <tr><td><input type="text" placeholder="C"></td><td><input type="number" class="p" oninput="calc()"></td><td><input type="number" class="q" oninput="calc()"></td><td class="avg-cell">0</td><td><input type="text"></td></tr>
+            <tr><td><input type="text" placeholder="D"></td><td><input type="number" class="p" oninput="calc()"></td><td><input type="number" class="q" oninput="calc()"></td><td class="avg-cell">0</td><td><input type="text"></td></tr>
+            <tr><td><input type="text" placeholder="E"></td><td><input type="number" class="p" oninput="calc()"></td><td><input type="number" class="q" oninput="calc()"></td><td class="avg-cell">0</td><td><input type="text"></td></tr>
         </tbody>
     </table>
-
-    <div class="btn-container">
-        <button onclick="window.location.reload()">清空重新開始</button>
-        <span>* 點擊標題可切換升冪/降冪排序</span>
+    <div class="footer">
+        <button onclick="location.reload()">清空內容</button>
+        <span>* 自動標示最低單價</span>
     </div>
 </div>
-
 <script>
-    // 計算平均單價與標示最低價
-    function calcAll() {
-        const rows = document.querySelectorAll('#priceTable tbody tr');
-        let minAvg = Infinity;
-        let cheapestRow = null;
-
-        rows.forEach(row => {
-            const p = parseFloat(row.querySelector('.totalPrice').value) || 0;
-            const q = parseFloat(row.querySelector('.totalQty').value) || 0;
-            const avgCell = row.querySelector('.avg-price-cell');
-            
-            row.classList.remove('cheapest');
-
-            if (p > 0 && q > 0) {
-                const res = p / q;
-                avgCell.innerText = res.toFixed(2);
-                if (res < minAvg) {
-                    minAvg = res;
-                    cheapestRow = row;
-                }
-            } else {
-                avgCell.innerText = "0";
-            }
+    function calc() {
+        let rows = document.querySelectorAll('tbody tr'), min = Infinity, best = null;
+        rows.forEach(r => {
+            let p = parseFloat(r.querySelector('.p').value)||0, q = parseFloat(r.querySelector('.q').value)||0, a = r.querySelector('.avg-cell');
+            a.classList.remove('cheapest');
+            if(p>0 && q>0) {
+                let res = p/q; a.innerText = res.toFixed(2);
+                if(res < min) { min = res; best = a; }
+            } else { a.innerText = "0"; }
         });
-
-        if (cheapestRow && minAvg !== Infinity) {
-            cheapestRow.classList.add('cheapest');
-        }
+        if(best) best.classList.add('cheapest');
     }
-
-    // 排序功能
-    let sortDirection = true; 
-    function sortTable(columnIndex) {
-        const table = document.getElementById("priceTable");
-        const tbody = table.tBodies[0];
-        const rows = Array.from(tbody.rows);
-
-        sortDirection = !sortDirection;
-
+    let dir = true;
+    function sortTable(idx) {
+        let tbody = document.querySelector('tbody'), rows = Array.from(tbody.rows);
+        dir = !dir;
         rows.sort((a, b) => {
-            let valA, valB;
-            
-            // 取得輸入框的值或單元格文字
-            if (columnIndex === 3) { // 平均單價欄位
-                valA = parseFloat(a.cells[columnIndex].innerText) || 0;
-                valB = parseFloat(b.cells[columnIndex].innerText) || 0;
-            } else { // 總價或數量欄位
-                valA = parseFloat(a.cells[columnIndex].querySelector('input').value) || 0;
-                valB = parseFloat(b.cells[columnIndex].querySelector('input').value) || 0;
-            }
-
-            return sortDirection ? valA - valB : valB - valA;
+            let vA = idx===3 ? parseFloat(a.cells[idx].innerText) : parseFloat(a.cells[idx].querySelector('input').value)||0;
+            let vB = idx===3 ? parseFloat(b.cells[idx].innerText) : parseFloat(b.cells[idx].querySelector('input').value)||0;
+            return dir ? vA - vB : vB - vA;
         });
-
-        // 重新附加排序後的行
-        rows.forEach(row => tbody.appendChild(row));
+        rows.forEach(r => tbody.appendChild(r));
     }
 </script>
-
 </body>
 </html>

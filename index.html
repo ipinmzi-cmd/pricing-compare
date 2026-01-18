@@ -5,69 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>智慧比價工具</title>
     <style>
-        body { font-family: -apple-system, sans-serif; margin: 0; background-color: #f2f2f7; padding: 15px; }
-        .container { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        h2 { text-align: center; font-size: 1.2em; color: #1c1c1e; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background-color: #007aff; color: white; padding: 10px 5px; font-size: 13px; cursor: pointer; }
-        td { border-bottom: 1px solid #e5e5ea; padding: 8px 2px; text-align: center; }
-        input { width: 90%; padding: 12px 5px; border: 1px solid #d1d1d6; border-radius: 8px; font-size: 16px; text-align: center; -webkit-appearance: none; }
-        .avg-cell { font-weight: bold; color: #ff9500; font-size: 14px; }
-        .cheapest { background-color: #34c759; color: white !important; border-radius: 5px; padding: 5px; }
-        .footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #8e8e93; }
-        button { background: #ff3b30; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; }
+        :root {
+            --primary: #007aff;
+            --success: #34c759;
+            --bg: #f2f2f7;
+        }
+        body { font-family: -apple-system, system-ui, sans-serif; margin: 0; background-color: var(--bg); padding: 15px; }
+        .container { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; margin-bottom: 15px; font-size: 1.4rem; color: #1c1c1e; }
+        
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { background-color: var(--primary); color: white; padding: 12px 5px; font-size: 14px; cursor: pointer; }
+        th:first-child { border-radius: 8px 0 0 8px; }
+        th:last-child { border-radius: 0 8px 8px 0; }
+        th::after { content: " ↕"; font-size: 10px; opacity: 0.7; }
+
+        td { padding: 5px 2px; text-align: center; }
+        input { 
+            width: 85%; padding: 12px 5px; border: 1px solid #d1d1d6; border-radius: 10px; 
+            font-size: 16px; text-align: center; background: #fafafa;
+        }
+        input:focus { border-color: var(--primary); outline: none; background: white; }
+
+        .avg-cell { font-weight: bold; color: #8e8e93; font-size: 15px; transition: all 0.3s; }
+        .cheapest-text { color: var(--success) !important; font-size: 18px; }
+        .cheapest-row { background-color: #fafff9; }
+
+        .controls { margin-top: 25px; display: flex; justify-content: space-between; align-items: center; }
+        button { 
+            background: #ff3b30; color: white; border: none; padding: 12px 20px; 
+            border-radius: 10px; font-weight: 600; font-size: 14px;
+        }
+        .tip { font-size: 12px; color: #8e8e93; max-width: 60%; }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <h2>智慧比價 (點擊標題排序)</h2>
+    <h2>智慧比價助手</h2>
     <table id="priceTable">
         <thead>
             <tr>
                 <th style="width: 25%;">來源</th>
-                <th onclick="sortTable(1)" style="width: 20%;">總價</th>
-                <th onclick="sortTable(2)" style="width: 20%;">總數</th>
-                <th onclick="sortTable(3)" style="width: 20%;">平均 ↓</th>
-                <th>備註</th>
+                <th onclick="sortTable(1)">總價格</th>
+                <th onclick="sortTable(2)">總數量</th>
+                <th onclick="sortTable(3)">單價 ↓</th>
             </tr>
         </thead>
         <tbody>
-            <tr><td><input type="text" placeholder="A"></td><td><input type="number" class="p" oninput="calc()"></td><td><input type="number" class="q" oninput="calc()"></td><td class="avg-cell">0</td><td><input type="text"></td></tr>
-            <tr><td><input type="text" placeholder="B"></td><td><input type="number" class="p" oninput="calc()"></td><td><input type="number" class="q" oninput="calc()"></td><td class="avg-cell">0</td><td><input type="text"></td></tr>
-            <tr><td><input type="text" placeholder="C"></td><td><input type="number" class="p" oninput="calc()"></td><td><input type="number" class="q" oninput="calc()"></td><td class="avg-cell">0</td><td><input type="text"></td></tr>
-            <tr><td><input type="text" placeholder="D"></td><td><input type="number" class="p" oninput="calc()"></td><td><input type="number" class="q" oninput="calc()"></td><td class="avg-cell">0</td><td><input type="text"></td></tr>
-            <tr><td><input type="text" placeholder="E"></td><td><input type="number" class="p" oninput="calc()"></td><td><input type="number" class="q" oninput="calc()"></td><td class="avg-cell">0</td><td><input type="text"></td></tr>
+            <tr>
+                <td><input type="text" placeholder="店家1"></td>
+                <td><input type="number" class="p" placeholder="0" oninput="calc()"></td>
+                <td><input type="number" class="q" placeholder="0" oninput="calc()"></td>
+                <td class="avg-cell">0</td>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="店家2"></td>
+                <td><input type="number" class="p" placeholder="0" oninput="calc()"></td>
+                <td><input type="number" class="q" placeholder="0" oninput="calc()"></td>
+                <td class="avg-cell">0</td>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="店家3"></td>
+                <td><input type="number" class="p" placeholder="0" oninput="calc()"></td>
+                <td><input type="number" class="q" placeholder="0" oninput="calc()"></td>
+                <td class="avg-cell">0</td>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="店家4"></td>
+                <td><input type="number" class="p" placeholder="0" oninput="calc()"></td>
+                <td><input type="number" class="q" placeholder="0" oninput="calc()"></td>
+                <td class="avg-cell">0</td>
+            </tr>
+            <tr>
+                <td><input type="text" placeholder="店家5"></td>
+                <td><input type="number" class="p" placeholder="0" oninput="calc()"></td>
+                <td><input type="number" class="q" placeholder="0" oninput="calc()"></td>
+                <td class="avg-cell">0</td>
+            </tr>
         </tbody>
     </table>
-    <div class="footer">
-        <button onclick="location.reload()">清空內容</button>
-        <span>* 自動標示最低單價</span>
+
+    <div class="controls">
+        <button onclick="location.reload()">全部清空</button>
+        <div class="tip">點擊標題藍色區域可排序，綠色數字最划算。</div>
     </div>
 </div>
+
 <script>
     function calc() {
         let rows = document.querySelectorAll('tbody tr'), min = Infinity, best = null;
+        
         rows.forEach(r => {
-            let p = parseFloat(r.querySelector('.p').value)||0, q = parseFloat(r.querySelector('.q').value)||0, a = r.querySelector('.avg-cell');
-            a.classList.remove('cheapest');
-            if(p>0 && q>0) {
-                let res = p/q; a.innerText = res.toFixed(2);
-                if(res < min) { min = res; best = a; }
-            } else { a.innerText = "0"; }
+            let p = parseFloat(r.querySelector('.p').value) || 0;
+            let q = parseFloat(r.querySelector('.q').value) || 0;
+            let a = r.querySelector('.avg-cell');
+            
+            // 重置樣式
+            a.classList.remove('cheapest-text');
+            r.classList.remove('cheapest-row');
+
+            if (p > 0 && q > 0) {
+                let res = p / q;
+                a.innerText = res.toFixed(2);
+                if (res < min) {
+                    min = res;
+                    best = { cell: a, row: r };
+                }
+            } else {
+                a.innerText = "0";
+            }
         });
-        if(best) best.classList.add('cheapest');
+
+        if (best && min !== Infinity) {
+            best.cell.classList.add('cheapest-text');
+            best.row.classList.add('cheapest-row');
+        }
     }
+
     let dir = true;
     function sortTable(idx) {
         let tbody = document.querySelector('tbody'), rows = Array.from(tbody.rows);
         dir = !dir;
+        
         rows.sort((a, b) => {
-            let vA = idx===3 ? parseFloat(a.cells[idx].innerText) : parseFloat(a.cells[idx].querySelector('input').value)||0;
-            let vB = idx===3 ? parseFloat(b.cells[idx].innerText) : parseFloat(b.cells[idx].querySelector('input').value)||0;
+            let vA = (idx === 3) ? parseFloat(a.cells[idx].innerText) : parseFloat(a.cells[idx].querySelector('input').value) || 0;
+            let vB = (idx === 3) ? parseFloat(b.cells[idx].innerText) : parseFloat(b.cells[idx].querySelector('input').value) || 0;
             return dir ? vA - vB : vB - vA;
         });
+        
         rows.forEach(r => tbody.appendChild(r));
     }
 </script>
+
 </body>
 </html>
